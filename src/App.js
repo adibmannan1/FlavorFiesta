@@ -3,22 +3,25 @@ import './Loader.css';
 import './Header.css'
 import './Search.css';
 import './Favorites.css';
+import './Modal.css';
 import Header from './components/Header';
-import Search from './components/Search';
 import Favorites from './components/Favorites';
 import Meals from './components/Meals';
 import Modal from './components/Modal';
+import { useGlobalContext } from './context';
 
 function App() {
+  const {showModal, favorites} = useGlobalContext()
+
   return (
     <div className="App">
         <Header/>
-        <div class="app-container">
+        <div className="app-container">
           <Meals/>
-          <Favorites/>
+          {favorites.length>0? <Favorites/> : <p>You have no Favorite recipes yet. 😊</p>}
         </div>
       
-      {/* <Modal/> */}
+      {showModal && <Modal/>}
     </div>
   );
 }

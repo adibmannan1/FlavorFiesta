@@ -1,11 +1,28 @@
 import React from 'react'
+import { useGlobalContext } from '../context'
 
 const Favorites = () => {
+  const {favorites, selectMeal, removeFromFavorites} = useGlobalContext()
+
   return (
     <div className='favorites'>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor vel eveniet nesciunt, asperiores in nulla eligendi tempora nostrum numquam incidunt expedita vitae reiciendis minima illum ad quaerat sequi veritatis voluptas voluptatum dignissimos sed amet. Reiciendis quo suscipit omnis qui temporibus voluptates, provident consequuntur culpa earum maxime ea inventore explicabo sit illum iusto consequatur nostrum, et velit exercitationem optio, neque error repellat. Eaque, explicabo soluta cum aspernatur necessitatibus culpa sunt iste minus sed fuga quisquam nulla pariatur ipsam dolor impedit? Fugit accusamus animi facere laboriosam assumenda magni modi voluptates? Quis voluptates placeat nisi corporis quo nihil voluptatum cum laboriosam quasi sapiente.
-      </div>
+      <h2 className='favorite-title'>Favorites</h2>
+      {
+        favorites.map(favorite=>{
+          console.log(favorite)
+          return(
+          <div key={favorite.idMeal} className='favorite-container'>
+            <img src={favorite.strMealThumb} alt={favorite.strMeal} onClick={()=>selectMeal(favorite.idMeal, true)}/>
+            <div className="favorite-content">
+              <div className="favorite-text">
+                <h4>{favorite.strMeal}</h4>
+                <p>{favorite.strCategory}</p>
+              </div>
+              <button onClick={()=>removeFromFavorites(favorite.idMeal)}>Remove</button>
+            </div>
+          </div>
+          )})
+      }
     </div>
   )
 }

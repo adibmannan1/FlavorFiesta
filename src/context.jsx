@@ -14,6 +14,12 @@ const AppProvider = ({ children }) => {
   const [meals, setMeals] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
+  
+  const [showModal, setShowModal] = useState(false)
+  const [selectedMeal, setSelectedMeal] = useState(null)
+
+  const [favorites, setFavorites] = useState([])
+
   const fetchMeals = async (url) => {
     setLoading(true)
     try {
@@ -22,8 +28,6 @@ const AppProvider = ({ children }) => {
       if(data.meals){
         setMeals(data.meals)
       }else setMeals([])
-
-      console.log(data.meals)
     } catch (error) {
       console.error('Error fetching data:', error.response);
     }
@@ -34,15 +38,41 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     fetchMeals(searchMealUrl);
   }, [])
+  console.log(meals)
 
+  const fetchRandomMeal = () => {
+    setSearchTerm('')
+    fetchMeals(randomMealUrl)
+  }
+  const selectMeal = (idMeal, favoriteMeal) => {
+    let meal;
+    if(favoriteMeal){
+      meal = favorites.find(meal=> meal.idMeal === idMeal)
+    }else{
+      meal = meals.find(meal=> meal.idMeal === idMeal)
+    }
+    setSelectedMeal(meal)
+    setShowModal(true)
+  }
   //function to use the userinput in context.jsx
   useEffect(() => {
-    const searchUrl = `${searchMealUrl}${searchTerm}`;
-    fetchMeals(searchUrl);
+    if(!searchTerm) return
+    fetchMeals(`${searchMealUrl}${searchTerm}`);
   }, [searchTerm])
+  
+  const addToFavorites = (idMeal) => {
+    const alreadyFavorite = favorites.find(meal=> meal.idMeal === idMeal)
+    if(alreadyFavorite) return
+    const meal = meals.find(meal=> meal.idMeal === idMeal)
+    const updatedFavorties = [...favorites, meal]
+    setFavorites(updatedFavorties)
+  }
+  const removeFromFavorites = (idMeal) => {
+    const updatedFavorties = favorites.filter(meal=> meal.idMeal !== idMeal)
+    setFavorites(updatedFavorties)
+  }
 
-
-    return <AppContext.Provider value={{loading, meals, setSearchTerm}}>
+    return <AppContext.Provider value={{loading, meals, setSearchTerm, fetchRandomMeal, showModal, selectedMeal, selectMeal, setShowModal, setSelectedMeal, favorites, addToFavorites, removeFromFavorites}}>
               {children}
             </AppContext.Provider>
   };
