@@ -22,11 +22,10 @@ const Meals = () => {
 
   return (
     <section className='section-main'>
-      {/* <Search/> */}
       <div className='section-center'>
         {meals.map((meal)=>{
           const {idMeal, strMeal, strArea, strMealThumb} = meal
-        
+          const truncatedStrMeal = strMeal.length > 22 ? `${strMeal.slice(0, 22)}...` : strMeal;
           //random price generator
           function generatePriceNumber() {
             const randomNumber = Math.floor(Math.random() * (90 - 20 + 1)) + 20;
@@ -42,7 +41,7 @@ const Meals = () => {
                 <footer>
                   <div className="card-title">
                   <h4>
-                    {strMeal}
+                    {truncatedStrMeal}
                   </h4>
                     <p>{strArea}</p>
                   </div>

@@ -4,7 +4,6 @@ import { useGlobalContext } from '../context'
 const Modal = () => {
   const {selectedMeal, setShowModal, setSelectedMeal} = useGlobalContext()
   const {strMeal, strInstructions, strSource, strMealThumb} = selectedMeal
-  const lines = strInstructions.split('\n');
   return (
     <aside className='modal-overlay'>
       <div className='modal-container'>
@@ -21,9 +20,7 @@ const Modal = () => {
           </header>
           <h3>Recipe: </h3>
           <div className='recipe'>
-            {lines.map((line, index) => (
-              <p key={index} style={{ marginBottom: '10px' }}>{line}</p>
-            ))}
+            {strInstructions}
           </div>
           <a href={strSource} target='_blank' rel="noreferrer">Source</a>
         </main>

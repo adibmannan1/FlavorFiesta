@@ -9,7 +9,6 @@
 .header-img{
     width: 90px;
 }
-
 .btn-surprise {
     color: #1c511e;
     font-weight: bolder;
@@ -25,10 +24,21 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-  }
+}
 .btn-surprise p {
     margin-top: -2px;
 }
 .btn-surprise:hover {
     background-color: #77d37b
+}
+@media only screen and (max-width: 767px) {
+    .header{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    .header-img{
+        display: none;
+    }
 }

@@ -10,7 +10,7 @@ body{
 .app-container{
   display: flex;
 }
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 1100px) {
   .app-container{
     flex-direction: column;
   }
@@ -19,33 +19,40 @@ body{
 .section-main{
   display: flex;
   flex-direction: column;
+  margin: auto;
   width: 75vw;
+  justify-content: center;
 }
 .section-center{
-  background-color: #FFF1DD;
   background-color: hsl(24, 0%, 98%);
   margin: auto;
   margin-top: 0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 45px;
   padding: 20px;
+}
+/* for tablet */
+@media only screen and (max-width: 1103px) {
+  .section-main{
+    width: 100%;
+  }
+  .section-center {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    max-width: 88%;
+    margin: auto;
+    padding: 15px;
+    gap: 30px;
+  }
 }
 /* for mobile */
 @media only screen and (max-width: 767px) {
   .section-center {
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin: auto;
-  }
-}
-/* for tablet */
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-  .section-center {
-    grid-template-columns: 1fr 1fr 1fr;
-    max-width: 95vw;
-    padding: 15px;
-    gap: 30px;
+    width: 100vw;
+    gap: 70px;
+    padding: 0;
   }
 }
 .card{
@@ -61,6 +68,13 @@ body{
 @media only screen and (max-width: 1023px) {
   .card{
     box-shadow: rgba(17, 12, 46, 0.08) 0px 30px 30px 0px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .card{
+    scale: 1.2;
+    margin-top: 20px;
+    margin-bottom: 50px;
   }
 }
 .card:hover {

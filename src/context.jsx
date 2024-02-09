@@ -4,21 +4,23 @@ import axios from 'axios';
 
 // context
 const AppContext = React.createContext();
-const searchMealUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s=' //search meals Arrabiata
+const searchMealUrl = 'https://www.themealdb.com/api/json/v1/1/search.php?s=' //search meals
 const randomMealUrl = 'https://www.themealdb.com/api/json/v1/1/random.php' //random meal generator
-//                     https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood
-//                     https://www.themealdb.com/api/json/v1/1/list.php?c=list
 
 // provider component
 const AppProvider = ({ children }) => {
   const [meals, setMeals] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
-  
   const [showModal, setShowModal] = useState(false)
   const [selectedMeal, setSelectedMeal] = useState(null)
+  const [categories, setCategories] = useState([]);
 
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] = useState(() => {
+    // Load favorites from local storage on component mount
+    const storedFavorites = localStorage.getItem('favorites');
+    return storedFavorites ? JSON.parse(storedFavorites) : [];
+  });
 
   const fetchMeals = async (url) => {
     setLoading(true)
@@ -33,12 +35,22 @@ const AppProvider = ({ children }) => {
     }
     setLoading(false)
   };
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get('https://www.themealdb.com/api/json/v1/1/categories.php');
+      if (data.categories) {
+        setCategories(data.categories);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error.response);
+    }
+  };
+  
 
   //loads initial food suggestions
   useEffect(() => {
     fetchMeals(searchMealUrl);
   }, [])
-  console.log(meals)
 
   const fetchRandomMeal = () => {
     setSearchTerm('')
@@ -64,15 +76,32 @@ const AppProvider = ({ children }) => {
     const alreadyFavorite = favorites.find(meal=> meal.idMeal === idMeal)
     if(alreadyFavorite) return
     const meal = meals.find(meal=> meal.idMeal === idMeal)
-    const updatedFavorties = [...favorites, meal]
-    setFavorites(updatedFavorties)
+    const updatedFavorites = [...favorites, meal]
+    setFavorites(updatedFavorites)
+    // Save favorites to local storage
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
   }
   const removeFromFavorites = (idMeal) => {
-    const updatedFavorties = favorites.filter(meal=> meal.idMeal !== idMeal)
-    setFavorites(updatedFavorties)
+    const updatedFavorites = favorites.filter(meal=> meal.idMeal !== idMeal)
+    setFavorites(updatedFavorites)
+    // Save updated favorites to local storage
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
   }
 
-    return <AppContext.Provider value={{loading, meals, setSearchTerm, fetchRandomMeal, showModal, selectedMeal, selectMeal, setShowModal, setSelectedMeal, favorites, addToFavorites, removeFromFavorites}}>
+  const filterByCategory = async (category) => {
+    setSearchTerm('');
+    const categoryUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
+
+    fetchMeals(categoryUrl);
+  }
+
+  
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+    return <AppContext.Provider value={{loading, meals, setSearchTerm, fetchRandomMeal, showModal, selectedMeal, selectMeal, setShowModal, setSelectedMeal, favorites, addToFavorites, removeFromFavorites, categories, filterByCategory,}}>
               {children}
             </AppContext.Provider>
   };
