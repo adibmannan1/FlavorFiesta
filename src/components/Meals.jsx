@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useMemo } from 'react';
 import { useGlobalContext } from '../context'
 
 const Meals = () => {
   const {loading, meals, selectMeal, addToFavorites} = useGlobalContext()
-
+  // Use useMemo with an empty dependency array to ensure it runs only once
+  
+  const memoizedPrices = useMemo(() => {
+    return meals.reduce((acc, meal) => {
+      acc[meal.idMeal] = Math.floor(Math.random() * (90 - 20 + 1)) + 20;
+      return acc;
+    }, {});
+  }, [meals]); // Empty dependency array
   if(loading){
     return(
       <div className="spinner-container">
@@ -19,19 +26,14 @@ const Meals = () => {
       </h4>
     );
   }
-
   return (
     <section className='section-main'>
       <div className='section-center'>
         {meals.map((meal)=>{
           const {idMeal, strMeal, strArea, strMealThumb} = meal
           const truncatedStrMeal = strMeal.length > 22 ? `${strMeal.slice(0, 22)}...` : strMeal;
-          //random price generator
-          function generatePriceNumber() {
-            const randomNumber = Math.floor(Math.random() * (90 - 20 + 1)) + 20;
-            return randomNumber;
-          }
-          const price = generatePriceNumber();
+          // Use the memoized price directly
+          const price = memoizedPrices[idMeal];
           return(
             <div id={idMeal} key={idMeal} className='card'>
               <div className="card-content">
